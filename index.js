@@ -36,14 +36,19 @@ const
         }catch(error){
             throw new Error(error);
         }
-    };
+    },
+
+    //* return data about progect 
+    getProgramData = () => {
+
+    }
 
 // console.log(checkFolder('././Центры/УМО/1. Экспл.тяг.подвижного состава/~$ Организация работы Нарядчиков-2017.doc'));
 
 let 
     // !ШАГ3
     //TODO: создает html страницы
-    createFiles = () => {
+    createFiles = (filesName /*Array<string>*/) => {
 
     },
 
@@ -79,7 +84,8 @@ let
                     if(!checkFolder(`./${folderName}/${center}/${direction}/${program}`)) return true;
                     console.log('____', program);
                     let dataFiles = fs.readdirSync(`./${folderName}/${center}/${direction}/${program}`);
-
+                    
+                    console.log(getProgramData(dataFiles));
                     //сбор данных по програме
                 })
             });
