@@ -1,4 +1,6 @@
-const fs = require('fs');
+const
+    iconv = require('iconv-lite'),
+    fs    = require('fs');
 
 let
     layoutArr      = [],
@@ -13,7 +15,7 @@ let
         7: 'Образец документа.jpg',
         8: 'Учебный палн.doc',
         9: 'Рабочая программа.doc',
-        10: 'Картинка',
+        10: 'Картинка.jpg',
         11: 'Титульный лист.txt',
     },
     programData = {
@@ -52,6 +54,17 @@ const
         }
     },
 
+    bufferFromBufferString = (bufferStr) => {
+        return Buffer.from(
+            bufferStr
+                .replace(/[<>]/g, '') // remove < > symbols from str
+                .split(' ') // create an array splitting it by space
+                .slice(1) // remove Buffer word from an array
+                .reduce((acc, val) => 
+                    acc.concat(parseInt(val, 16)), [])  // convert all strings of numbers to hex numbers
+        )
+    }
+
     //* return data about progect 
     getProgramData = (filesName /*Array<string>*/, path /*string*/) => {
         
@@ -68,20 +81,32 @@ const
                 return;
             }
 
+            if(prop == null){
+                return
+            }
+
+            if(propWithType == null){
+                return;
+            }
+
             id           = Number(id[0]);
             prop         = prop[0];
             propWithType = propWithType[0]; 
 
-            console.log('++++++++', file, id, prop, propWithType);
-            //ошибка!!!!!
-            console.log(structureFiles[id].length, propWithType.length);
+            prop         = prop.substring(1, prop.length);
+            propWithType = propWithType.substring(1, propWithType.length);
+
             if(structureFiles[id] != propWithType){
                 console.error(`Файл ${file} не подходит под стандартную структуру`);
                 return;
             }
 
             //read file
-        //    console.log(fs.readFileSync(`${path}/${propWithType}`));
+            let fileData = fs.readFileSync(`${path}/${file}`).toJSON().data;
+
+            // buffer = Buffer.from(fileData)
+			str = iconv.decode(Buffer.from(fileData), "win1251");
+            console.log(str);
             
         }
 
